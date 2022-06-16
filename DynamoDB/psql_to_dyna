@@ -1,0 +1,54 @@
+import decimal
+import json
+import boto3
+import mysql.connector as conn
+import psycopg2 as pg
+import pandas as pd
+from pandas.io import sql
+from sqlalchemy import create_engine
+import dynamodb_json
+from dynamodb_json import json_util as j
+import pymysql
+import awswrangler as wr
+
+
+
+
+con = conn.connect(host='localhost', database='nb3', user='root' , passwd='')
+query = "SELECT * FROM beneficiaries limit 1"
+
+
+
+df = sql.read_sql(query , con)
+
+
+# re=json.loads(df.to_json())
+# print(type(re))
+# overwrite_keys = [partition_key, sort_key]
+
+def float_to_decimal(num):
+    return decimal.Decimal(str(num))
+
+def pandas_to_dynamodb(df):
+    df = df.fillna(0)
+    # convert any floats to decimals
+    for i in df.columns:
+        datatype = df[i].dtype
+        if datatype == 'float64':
+            df[i] = df[i].apply(float_to_decimal)
+    # write to dynamodb
+
+
+    wr.dynamodb.put_df(df=df, table_name='load')
+
+pandas_to_dynamodb(df)
+
+
+#
+# dynamodb = boto3.resource('dynamodb')
+# dynamoTable = dynamodb.Table('load')
+#
+# dynamoTable.put_item(
+#    Item=re
+
+# )
