@@ -1,0 +1,14 @@
+import boto3
+from boto3.dynamodb.conditions import Key
+
+
+dynamodb = boto3.resource('dynamodb',aws_access_key_id='xxxx', aws_secret_access_key='yyyy', region_name='us-west-2')
+
+# client = boto3.client('dynamodb',aws_access_key_id='AKIA5LHA36Y2M6MCB44E', aws_secret_access_key='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', region_name='us-west-2')
+    
+table = dynamodb.Table('Darsh')
+    
+resp = table.scan(ProjectionExpression="emp, id,cc,one")
+
+    
+print(resp['Items'])
