@@ -1,0 +1,14 @@
+import boto3
+from boto3.dynamodb.conditions import Key
+
+
+    dynamodb = boto3.resource('dynamodb',aws_access_key_id='xxx', aws_secret_access_key='yyyy', region_name='us-west-2')
+    
+    table = dynamodb.Table('Darsh')      
+    
+    resp = table.query(
+        KeyConditionExpression=Key('id').eq(1)
+    )
+    print(resp)          
+    if 'Items' in resp:
+        print(resp['Items'][0])
